@@ -1,0 +1,45 @@
+mkdir mysite - 폴더(디렉토리) 만들기
+<>cd mysite - 폴더 실행
+pip3 install virtualenv - 가상 개발환경 설치 
+ * pip3 list - 파일별 버전
+virtualenv myvenv - 개발환경 지정
+<>source myvenv/bin/activate - 개발환경 입장(myvenv)
+pip3 install django - 장고 설치
+django-admin startproject landingpage . - 프로젝트 생성(django-admin)
+python manage.py migrate - DB접근코드(makemigrations), DB적용(migrate)
+<>python manage.py runserver 0:80 - 실행(안됨)
+ * settings.py 설정 : ALLOWED_HOSTS = ['*']
+ * 프로젝트 - 실행URL과 포트(화살표) - 정상 가동(로켓)
+python manage.py startapp main
+main앱에 info.txt 추가
+ * settings.py 등록 :  INSTALLED_APPS = ['main']
+
+<1> landingpage > urls.py : url 경로지정
+from main.views import index : main views에서 index 가져옴
+urlpatterns = [path('', index),] : 기본접속시 index로 지정
+
+<2> main > views.py : html 파일연결
+def index(request):
+    return render(request, 'main/index.html') : render 함수 = 'index.html' 파이썬 문법을 프론트형 변형 후 전송
+
+<3> main > templates(폴더) > main > index.html : 표현되는 html
+bootstrap 무료탬플릿 다운 -> 구름IDE > static 폴더로 압축풀기
+static 내 index.html을 main > index.html 에 복/붙 + mysite에 static 폴더전체 업로드
+ * html 반영(CSS 미반영) -> 최상단 {% load static %}, 해당 href내 {% static ' ~ ' %}
+ * settings.py에 STATIC_URL 밑에, STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+<4> models.py : DB구축
+
+from django.db import models
+
+class Post(models.Model):
+    title=models.CharField(max_length=50)
+    contents=models.TextField()
+    img=models.ImageField()
+    dataCreat=models.DateTimeField()
+    category=models.CharField(max_length=20)
+ * img안됨 : pip install pilow - pillow 설치
+
+python manage.py makemigrations : main > migrations > 0001_initial.py 형성됨
+python manage.py migrate :  DB반영(Admin 페이지에서 확인 - '슈퍼유저' 필요)
+python manage.py createsuperuser : 슈퍼유저 생성
